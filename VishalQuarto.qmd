@@ -1,5 +1,6 @@
 ---
 title: "Child Health and Economic Prosperity: A Global Analysis of ORT Coverage"
+author: Vishal - A00046486 | DCU Business School | 
 format:
   html:
     output-file: index.html
@@ -283,7 +284,7 @@ The option to view the data by gender adds a deeper layer to the narrative, high
 This map is more than just a visualization of statistics; it’s a powerful reminder of our world’s realities and the work still needed. It calls on all of us to not just observe, but to understand and take action. Because at the heart of these data points are children who deserve the chance to grow, learn, and thrive—every child deserves a healthy start.
 :::
 
-## 2. Bar Chart: ORT Treatement by Gender
+## Bar Chart: ORT Treatement by Gender
 
 ```{python}
 import plotly.graph_objects as go
@@ -361,7 +362,7 @@ fig_bars.show()
 Global data shows near-identical ORT treatment rates for boys and girls with diarrhea, with girls slightly ahead in recent years—a significant achievement in health equity. This parity reflects successful interventions ensuring equal access to this life-saving care. While treatment rates are balanced, subtle differences may persist in prevention and follow-up. The equal bars represent real progress, proving that when simple, effective solutions are prioritized, gender gaps in basic healthcare can be closed. However, continued focus is needed to maintain and expand this equity across all aspects of child health
 :::
 
-## 3. Trend Over Time for Selected Country
+## Trend Over Time for Selected Country
 
 ```{python}
 import plotly.express as px
@@ -423,7 +424,7 @@ Every country has its own story, especially when it comes to the health of its y
 This is more than just trend analysis; it's a testament to each nation's efforts toward better child health. It calls us to celebrate victories, learn from setbacks, and work towards ensuring every child has access to life-saving care. Let these trends inspire action and remind us that every child deserves a healthy life.
 :::
 
-## 4. Scatter Plot: GDP vs ORT Coverage
+## Scatter Plot: GDP vs ORT Coverage
 
 ```{python}
 fig_gdp_scatter = px.scatter(
@@ -541,7 +542,7 @@ html_code += "</div>"
 display(HTML(html_code))
 ```
 
-## 5. Range of ORT Coverage Over Time
+## Range of ORT Coverage Over Time
 
 ```{python}
 import plotly.graph_objects as go
@@ -599,3 +600,4 @@ While wealth influences healthcare, it’s not the only factor. Many countries h
 At the heart of these stories are the children whose survival depends on a simple, affordable treatment. As we move forward, let these narratives inspire action, reminding us of the importance of equitable healthcare and the impact we can have on children's lives.
 
 Every child deserves a healthy start, and it’s up to us to make that a reality. Let’s continue the fight against diarrhoea and ensure every child has access to life-saving ORT, for a healthier future for all.
+

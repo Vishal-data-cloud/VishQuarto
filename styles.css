@@ -30,8 +30,17 @@
     transition: background-color 0.3s ease;
   }
   
-  
+  .nav-link.active, .nav-link .active .nav-link:hover {
+    color: #81c784 !important;
+  }
 
+  .sidebar nav[role=doc-toc] ul>li>a:hover, .sidebar nav[role=doc-toc] ul>li>ul>li>a:hover {
+    color: #81c784 !important;
+}
+.sidebar nav[role=doc-toc] ul>li>a.active, .sidebar nav[role=doc-toc] ul>li>ul>li>a.active {
+  border-left: 1px solid #81c784;
+  color: #81c784 !important;
+}
   #particles-js {
     position: fixed;
     top: 0;
@@ -92,3 +101,13 @@ nav#TOC:hover {
   border-radius: 0 0 12px 12px;
 }
 
+sidebar nav[role=doc-toc] ul>li>a.active, 
+.sidebar nav[role=doc-toc] ul>li>ul>li>a.active {
+  border-left: 1px solid #81c784;
+  color: #81c784 !important;
+}
+
+body, p, h1, h2, h3, h4, h5, h6, li, td, th, div {
+  text-align: justify !important;
+  text-justify: inter-word; /* Improves spacing for justified text */
+}
