@@ -1,5 +1,5 @@
 ---
-title: "Data for Life: Tracking ORT Access for the World’s Most Vulnerabl"
+title: "Child Health and Economic Prosperity: A Global Analysis of ORT Coverage"
 format:
   html:
     output-file: index.html
@@ -42,7 +42,7 @@ jupyter: python3
 
 # A Story of Care and Resilience {.animate-on-scroll}
 
-In a world often captivated by cutting-edge medical breakthroughs, it’s easy to overlook the quiet, lifesaving power of something as simple as a spoonful of salt and sugar mixed into clean water. Diarrhoea remains one of the leading causes of death among children under the age of five, especially in low-income regions. The tragedy lies not only in the illness itself, but in the heartbreaking reality that the treatment — Oral Rehydration Therapy (ORT) — is widely known, incredibly effective, and profoundly affordable. Despite this, millions of children still go without it, due to barriers such as poverty, misinformation, and fragile healthcare systems. This report brings those hidden struggles into view, not through individual stories, but through global data that represents the lives of real children, families, and frontline workers. Within these visuals, you’ll uncover patterns of progress, areas of inequity, and the undeniable impact of community health efforts. Behind every percentage point lies a child who might have lived — or did — because of this humble solution. This is more than a data analysis; it’s a story of resilience, equity, and the collective power to save lives — one sip at a time.
+In a world often focused on groundbreaking medical advancements, the simple yet life-saving power of a mixture of salt, sugar, and clean water is frequently overlooked. Diarrhoea remains one of the leading causes of death among children under five, particularly in low-income regions. The tragedy lies not just in the illness itself, but in the fact that the treatment — Oral Rehydration Therapy (ORT) — is well-known, highly effective, and affordable. Yet, millions of children still go without it due to barriers such as poverty, misinformation, and weak healthcare systems. This report sheds light on these hidden struggles, using global data to represent the lives of children, families, and healthcare workers. Through these visuals, you'll uncover trends of progress, areas of disparity, and the significant impact of community health initiatives. Behind every data point is a child whose life was saved — or could have been — by this simple solution. This isn’t just a data analysis; it's a story of resilience, equity, and the collective ability to save lives — one sip at a time.
 
 ```{python}
 import polars as pl
@@ -78,7 +78,7 @@ pdf = pdf.sort_values("time_period")
 
 # Key Indicators of Global Diarrhoea Treatment Efforts
 
-::: columns
+:::::: columns
 ::: {#C1 .column width="33%"}
 ```{python}
 import plotly.graph_objects as go
@@ -130,10 +130,6 @@ fig3.show()
 # Patterns, Progress, and Pain Points
 
 ## Global ORT Coverage Trends (2000–2022): Male vs. Female Access Over Time
-
-
-
-
 
 ```{python}
 import plotly.graph_objects as go
@@ -275,19 +271,17 @@ fig.show()
 
 ```
 
-
 ::: {.callout-tip appearance="minimal" icon="false"}
-## The Silent Crisis of Child Diarrhea
+## **The Silent Crisis of Child Diarrhea**
 
-This map exposes a troubling disparity: while oral rehydration therapy (ORT) can prevent most diarrhea-related child deaths, access remains shockingly unequal. Some regions achieve near-universal coverage, yet Sub-Saharan Africa and South Asia lag behind - despite ORT costing just pennies.
+------------------------------------------------------------------------
 
-Progress exists (like Bangladesh's success story), but remains fragile. Pandemic disruptions revealed how quickly gains can vanish. Worse, gender gaps persist in some areas, with girls less likely to receive treatment than boys.
+Every color shift on this interactive world map tells a story of struggle, survival, disparity, and hope. It illustrates Global ORT Coverage Trends from 2000 to 2022, capturing the ongoing battle against diarrhoea in children under five. As you explore, each year unfolds new insights—some years bring progress and hope, while others remind us of the persistent challenges in providing essential healthcare.
 
-The tragedy? We have the solution. The challenge? Delivering it equitably. Every data point represents a life that could be saved with simple, affordable care. The question isn't medical - it's about justice for the world's most vulnerable children.
+The option to view the data by gender adds a deeper layer to the narrative, highlighting the gender disparities that still exist in healthcare access, urging us to strive for greater equity. Each data point on the map represents a child whose life could be saved with access to Oral Rehydration Therapy (ORT), a simple yet life-saving treatment.
+
+This map is more than just a visualization of statistics; it’s a powerful reminder of our world’s realities and the work still needed. It calls on all of us to not just observe, but to understand and take action. Because at the heart of these data points are children who deserve the chance to grow, learn, and thrive—every child deserves a healthy start.
 :::
-
-
-
 
 ## 2. Bar Chart: ORT Treatement by Gender
 
@@ -362,6 +356,8 @@ fig_bars.show()
 ::: {.callout-tip appearance="minimal" icon="false"}
 ## **Equal Treatment, Promising Progress**
 
+------------------------------------------------------------------------
+
 Global data shows near-identical ORT treatment rates for boys and girls with diarrhea, with girls slightly ahead in recent years—a significant achievement in health equity. This parity reflects successful interventions ensuring equal access to this life-saving care. While treatment rates are balanced, subtle differences may persist in prevention and follow-up. The equal bars represent real progress, proving that when simple, effective solutions are prioritized, gender gaps in basic healthcare can be closed. However, continued focus is needed to maintain and expand this equity across all aspects of child health
 :::
 
@@ -418,7 +414,13 @@ fig.show()
 ```
 
 ::: {.callout-tip appearance="minimal" icon="false"}
-# This chart tracks how individual countries have progressed over the years in providing ORT. Some nations display a steady rise, reflecting robust policy efforts and health campaigns. Others show erratic patterns or stagnation—signaling disruptions or neglected attention. These country-level insights empower policymakers to replicate success models and re-evaluate faltering initiatives.
+# **The Journey of a Nation**
+
+------------------------------------------------------------------------
+
+Every country has its own story, especially when it comes to the health of its youngest citizens. The "Trend Over Time for Selected Country" section lets you explore each nation's journey in combating diarrhoea among children under 5. As you select a country, you’ll follow its progress in providing Oral Rehydration Therapy (ORT), with each rise and fall on the graph representing milestones—successes, challenges, and health campaigns. Behind these data points are the lives of children profoundly impacted by ORT access.
+
+This is more than just trend analysis; it's a testament to each nation's efforts toward better child health. It calls us to celebrate victories, learn from setbacks, and work towards ensuring every child has access to life-saving care. Let these trends inspire action and remind us that every child deserves a healthy life.
 :::
 
 ## 4. Scatter Plot: GDP vs ORT Coverage
@@ -455,10 +457,15 @@ fig_gdp_scatter.show()
 ```
 
 ::: {.callout-tip appearance="minimal" icon="false"}
-# This scatter plot connects economic prosperity with health outcomes. Countries with higher GDP per capita generally show higher ORT coverage, revealing how economic strength often enables better health infrastructure. Yet, some lower-income countries outperform richer peers, showing that political will and targeted health initiatives can drive impact—regardless of financial constraints.
+# **The Intersection of Wealth and Health**
+
+------------------------------------------------------------------------
+
+The scatter plot explores the relationship between a country's wealth, measured by GDP, and its ORT coverage for children under 5. Each dot represents a country, showing its economic strength and commitment to child health. While wealthier nations generally have higher ORT coverage, there are exceptions, with some economically challenged countries achieving impressive results. This plot highlights that GDP is not the sole determinant of healthcare success—policies, priorities, and equity also play key roles. Let it inspire action and remind us that every child, regardless of a nation's wealth, deserves access to life-saving healthcare.
 :::
 
 # More to Look At
+
 ```{python}
 from IPython.display import display, HTML
 latest_year = metadata_df["year"].max()
@@ -534,7 +541,6 @@ html_code += "</div>"
 display(HTML(html_code))
 ```
 
-
 ## 5. Range of ORT Coverage Over Time
 
 ```{python}
@@ -575,13 +581,21 @@ fig_range.show()
 ```
 
 ::: {.callout-tip appearance="minimal" icon="false"}
-# This graph uncovers the global range of ORT coverage each year—illustrating both progress and disparity. While the overall trend is upward, the persistent gap between highest and lowest coverage points to deep-rooted inequality. Bridging this gap demands international cooperation and localized intervention strategies that reach the most vulnerable.
+# **The Spectrum of Progress**
+
+------------------------------------------------------------------------
+
+graph showcases the diverse journeys nations have taken in expanding access to Oral Rehydration Therapy (ORT) for children under 5. Each line represents a country, with its length showing the range of ORT coverage over time—from the lowest to the highest levels recorded. The graph reveals both progress and disparity, with some countries showing significant improvements while others still face challenges.
+
+This graph is more than just data; it’s a story of hope and a reminder of the work still to be done. It highlights the importance of persistence, healthcare access, and the difference we can make in the lives of children. Every child deserves a healthy life, and it's up to us to ensure they get it.
 :::
 
 # Conclusion
 
-This report provides insights into diarrhoea treatment across nations and its relationship with economic and healthcare factors.
+The visual narratives we've explored—world map, country trends, GDP vs ORT coverage, and ORT range over time—converge on one powerful message: the fight against diarrhoea in children under 5 is far from over. These charts are not just data; they reflect our progress, highlight disparities, and call us to action.
 
+While wealth influences healthcare, it’s not the only factor. Many countries have made significant strides in ORT coverage regardless of their economic status. We've seen the persistence of gender disparities and tracked the unique journeys of nations striving to improve access to ORT.
 
+At the heart of these stories are the children whose survival depends on a simple, affordable treatment. As we move forward, let these narratives inspire action, reminding us of the importance of equitable healthcare and the impact we can have on children's lives.
 
-
+Every child deserves a healthy start, and it’s up to us to make that a reality. Let’s continue the fight against diarrhoea and ensure every child has access to life-saving ORT, for a healthier future for all.
