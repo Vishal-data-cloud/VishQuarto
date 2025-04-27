@@ -1,0 +1,96 @@
+<!-- particles.js CDN -->
+ <!-- Night Mode Toggle -->
+<button onclick="toggleNightMode()">Toggle Night Mode</button>
+
+<script>
+function toggleNightMode() {
+  document.body.classList.toggle('night-mode');
+}
+
+
+</script>
+
+<!-- Locomotive Scroll CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.0.0/dist/locomotive-scroll.min.css" />
+
+<!-- Particles.js and Locomotive Scroll JS -->
+<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.0.0/dist/locomotive-scroll.min.js"></script>
+<!-- Include particles.js -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<!-- Anime.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<!-- ScrollObserver -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const animatedElements = document.querySelectorAll(".animate-on-scroll");
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: entry.target,
+              translateY: [100, 0],
+              opacity: [0, 1],
+              duration: 1200,
+              easing: "easeOutExpo"
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.2
+      }
+    );
+
+    animatedElements.forEach(el => observer.observe(el));
+  });
+</script>
+
+<script>
+  // Initialize Locomotive Scroll
+  const scroll = new LocomotiveScroll({
+    el: document.querySelector('.scroll-container'), // Add the scroll container class
+    smooth: true, // Enable smooth scrolling
+    multiplier: 1.5, // Adjust the speed of scrolling (optional)
+    offset: [0, 0] // Add any additional offsets if required
+  });
+
+  // Optional: Refresh scroll when content is dynamically updated
+  window.addEventListener('load', function() {
+    scroll.update();
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const drawElements = document.querySelectorAll('.animate-draw text');
+
+    const drawObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            anime({
+              targets: entry.target,
+              strokeDashoffset: [anime.setDashoffset, 0],
+              easing: 'easeInOutSine',
+              duration: 2000,
+              direction: 'alternate',
+              loop: false
+            });
+            drawObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+
+    drawElements.forEach(el => drawObserver.observe(el));
+  });
+</script>
+
+
+
+<!-- Global Particles Section (Cover the whole document) -->
+<div id="particles-js" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>

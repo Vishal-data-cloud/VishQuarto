@@ -1,0 +1,587 @@
+---
+title: "Data for Life: Tracking ORT Access for the World’s Most Vulnerabl"
+format:
+  html:
+    output-file: index.html
+    theme: 
+        light: litera
+        dark: darkly
+    toc: true
+    embed-resources: true
+    toc-location: right
+    toc-title: On This Page
+    number-sections: true
+    code-fold: true
+    code-tools: false
+    code-summary: "Show/Hide Code"
+    lightbox: true
+    page-layout: full
+    css: styles.css
+    grid:
+      
+      body-width: 900px
+   
+    df-print: paged
+    link-external-icon: false
+    smooth-scroll: true
+    echo: true
+    include-in-header:
+      - header.html
+      - github-corner.html
+      
+    code-block-bg: true
+    code-block-border-left: "#2e7d32"
+    include-after-body: footer.html
+    title-block-banner: "#81c784"
+    title-block-banner-color: "black"
+project:
+  type: website
+  output-dir: docs
+jupyter: python3
+---
+
+# A Story of Care and Resilience {.animate-on-scroll}
+
+In a world often captivated by cutting-edge medical breakthroughs, it’s easy to overlook the quiet, lifesaving power of something as simple as a spoonful of salt and sugar mixed into clean water. Diarrhoea remains one of the leading causes of death among children under the age of five, especially in low-income regions. The tragedy lies not only in the illness itself, but in the heartbreaking reality that the treatment — Oral Rehydration Therapy (ORT) — is widely known, incredibly effective, and profoundly affordable. Despite this, millions of children still go without it, due to barriers such as poverty, misinformation, and fragile healthcare systems. This report brings those hidden struggles into view, not through individual stories, but through global data that represents the lives of real children, families, and frontline workers. Within these visuals, you’ll uncover patterns of progress, areas of inequity, and the undeniable impact of community health efforts. Behind every percentage point lies a child who might have lived — or did — because of this humble solution. This is more than a data analysis; it’s a story of resilience, equity, and the collective power to save lives — one sip at a time.
+
+```{python}
+import polars as pl
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+import geopandas as gpd
+import statsmodels.api as sm
+from plotly.subplots import make_subplots
+
+try:
+    diarrhoea_df = pl.read_csv("cleaned_data_1_no_null.csv")
+    metadata_df = pl.read_csv("cleaned_data_0_no_null.csv")
+except FileNotFoundError as e:
+    print(f"Error loading data files: {e}")
+    print("Please ensure both CSV files are in the working directory")
+    exit()
+
+
+sample_df = diarrhoea_df.to_pandas()
+
+df = diarrhoea_df.join(
+    metadata_df,
+    on=["country"],
+    how="inner"
+).filter(
+    (pl.col("sex") == "Total") &
+    (pl.col("time_period") == pl.col("year"))
+)
+pdf = df.to_pandas()
+pdf = pdf.sort_values("time_period")
+```
+
+# Key Indicators of Global Diarrhoea Treatment Efforts
+
+::: columns
+::: {#C1 .column width="33%"}
+```{python}
+import plotly.graph_objects as go
+
+avg_obs = sample_df['obs_value'].mean()
+
+fig1 = go.Figure(go.Indicator(
+    mode="number",
+    value=avg_obs,
+    number={'valueformat': '.1f', 'font': {'size': 50, 'color': '#81c784'}},
+    title={"text": "Average ORT Coverage (%)", 'font': {'size': 20}}
+))
+fig1.update_layout(height=300, margin=dict(t=40, b=10, l=10, r=10))
+fig1.show()
+```
+:::
+
+::: {#C2 .column width="33%"}
+```{python}
+record_count = sample_df.shape[0]
+
+fig2 = go.Figure(go.Indicator(
+    mode="number",
+    value=record_count,
+    number={'font': {'size': 50, 'color': '#81c784'}},
+    title={"text": "Total Data Points", 'font': {'size': 20}}
+))
+fig2.update_layout(height=300, margin=dict(t=40, b=10, l=10, r=10))
+fig2.show()
+```
+:::
+
+::: {#C3 .column width="33%"}
+```{python}
+distinct_countries = sample_df['country'].nunique()
+
+fig3 = go.Figure(go.Indicator(
+    mode="number",
+    value=distinct_countries,
+    number={'font': {'size': 50, 'color': '#81c784'}},
+    title={"text": "Countries Analyzed", 'font': {'size': 20}}
+))
+fig3.update_layout(height=300, margin=dict(t=40, b=10, l=10, r=10))
+fig3.show()
+```
+:::
+::::::
+
+# Patterns, Progress, and Pain Points
+
+## Global ORT Coverage Trends (2000–2022): Male vs. Female Access Over Time
+
+
+
+
+
+```{python}
+import plotly.graph_objects as go
+
+fig = go.Figure()
+
+
+for sex in ['Total', 'Male', 'Female']:
+    filtered_df = sample_df[sample_df["sex"] == sex]
+    
+    fig.add_trace(go.Choropleth(
+        locations=filtered_df["alpha_3_code"],
+        z=filtered_df["obs_value"],
+        colorscale="Greens",
+        marker_line_color='darkgray',
+        marker_line_width=0.5,
+        colorbar_title='ORT Coverage (%)',
+        visible=(sex == 'Total'), 
+        text=filtered_df["country"],  
+        hovertemplate="<b>%{text}</b><br>ORT Coverage: %{z:.1f}%",  # Cleaner tooltip
+        name=sex
+    ))
+
+
+if 'time_period' in sample_df.columns:
+    frames = []
+    for year in sorted(sample_df['time_period'].unique()):
+        year_data = []
+        for sex in ['Total', 'Male', 'Female']:
+            year_df = sample_df[(sample_df['time_period'] == year) & (sample_df['sex'] == sex)]
+            year_data.append(go.Choropleth(
+                locations=year_df["alpha_3_code"],
+                z=year_df["obs_value"],
+                text=year_df["country"], 
+                hovertemplate="<b>%{text}</b><br>ORT Coverage: %{z:.1f}%",
+                visible=(sex == 'Total')
+            ))
+        frames.append(go.Frame(data=year_data, name=str(year), traces=[0, 1, 2]))
+    fig.frames = frames
+
+    sliders = [dict(
+        active=0,
+        steps=[dict(
+            method='animate',
+            args=[[frame.name], dict(mode='immediate', frame=dict(duration=500, redraw=True))],
+            label=frame.name
+        ) for frame in fig.frames]
+    )]
+
+    animation_buttons = dict(
+        type="buttons",
+        showactive=False,
+        direction="left",
+        x=0.1,
+        y=0,
+        xanchor='left',
+        yanchor='bottom',
+        buttons=[
+            dict(
+                label="▶️ Play",
+                method="animate",
+                args=[None, {
+                    "frame": {"duration": 500, "redraw": True},
+                    "fromcurrent": True,
+                    "transition": {"duration": 300}
+                }]
+            ),
+            dict(
+                label="⏸️ Pause",
+                method="animate",
+                args=[[None], {
+                    "mode": "immediate",
+                    "frame": {"duration": 0, "redraw": False},
+                    "transition": {"duration": 0}
+                }]
+            )
+        ]
+    )
+else:
+    sliders = []
+    animation_buttons = dict()
+
+
+sex_dropdown = dict(
+    type="dropdown",
+    direction="down",
+    active=0,
+    x=0.1,
+    y=1.15,
+    buttons=[
+        dict(label="Total", method="update",
+             args=[{"visible": [True, False, False]},
+                   {"title": "Global ORT Treatment Coverage (Total)"}]),
+        dict(label="Male", method="update",
+             args=[{"visible": [False, True, False]},
+                   {"title": "Global ORT Treatment Coverage (Male)"}]),
+        dict(label="Female", method="update",
+             args=[{"visible": [False, False, True]},
+                   {"title": "Global ORT Treatment Coverage (Female)"}])
+    ]
+)
+
+
+projection_dropdown = dict(
+    type="dropdown",
+    direction="down",
+    showactive=True,
+    x=0.65,
+    y=1.15,
+    buttons=[
+        dict(label="Orthographic 🌐", method="relayout",
+             args=[{"geo.projection.type": "orthographic"}]),
+        dict(label="Natural Earth", method="relayout",
+             args=[{"geo.projection.type": "natural earth"}]),
+        dict(label="Winkel Tripel", method="relayout",
+             args=[{"geo.projection.type": "winkel tripel"}]),
+        dict(label="Mollweide", method="relayout",
+             args=[{"geo.projection.type": "mollweide"}]),
+        dict(label="Azimuthal", method="relayout",
+             args=[{"geo.projection.type": "azimuthal equal area"}])
+    ]
+)
+
+
+fig.update_layout(
+    title_text='',
+    geo=dict(
+        showframe=False,
+        showcoastlines=True,
+        projection=dict(type='orthographic')
+    ),
+    height=600,
+    updatemenus=[sex_dropdown, animation_buttons, projection_dropdown],
+    sliders=sliders
+)
+
+fig.show()
+
+
+```
+
+
+::: {.callout-tip appearance="minimal" icon="false"}
+## The Silent Crisis of Child Diarrhea
+
+This map exposes a troubling disparity: while oral rehydration therapy (ORT) can prevent most diarrhea-related child deaths, access remains shockingly unequal. Some regions achieve near-universal coverage, yet Sub-Saharan Africa and South Asia lag behind - despite ORT costing just pennies.
+
+Progress exists (like Bangladesh's success story), but remains fragile. Pandemic disruptions revealed how quickly gains can vanish. Worse, gender gaps persist in some areas, with girls less likely to receive treatment than boys.
+
+The tragedy? We have the solution. The challenge? Delivering it equitably. Every data point represents a life that could be saved with simple, affordable care. The question isn't medical - it's about justice for the world's most vulnerable children.
+:::
+
+
+
+
+## 2. Bar Chart: ORT Treatement by Gender
+
+```{python}
+import plotly.graph_objects as go
+
+
+countries = sample_df["country"].unique()
+fig_bars = go.Figure()
+
+
+color_map = {
+    "Male": "rgba(22,128,60, 0.7)",
+    "Female": "rgba(179,225,173,255)",
+    "Total": "rgba(0,103,42,255)"
+}
+
+#
+for country in countries:
+    df_filtered = sample_df[sample_df["country"] == country]
+    df_latest = df_filtered[df_filtered["time_period"] == df_filtered["time_period"].max()]
+    
+    fig_bars.add_trace(go.Bar(
+        x=df_latest["sex"],
+        y=df_latest["obs_value"],
+        name=country,
+        visible=(country == countries[0]),
+        marker=dict(color=[color_map.get(sex, "rgba(44, 160, 44, 0.7)") for sex in df_latest["sex"]]),
+        width=0.3  
+    ))
+
+
+buttons = [
+    dict(
+        label=country,
+        method="update",
+        args=[
+            {"visible": [c == country for c in countries]},
+            {"title.text": f"{country}"}
+        ]
+    )
+    for country in countries
+]
+
+fig_bars.update_layout(
+    updatemenus=[
+        dict(
+            buttons=buttons,
+            direction="down",
+            showactive=False,
+            x=1.05,
+            xanchor="left",
+            y=1.0,
+            yanchor="top",
+            pad={"r": 4, "t": 4},
+            font=dict(size=12)
+        )
+    ],
+    title={"text": f" {countries[0]}", "x": 0.5},
+    xaxis_title="Gender",
+    yaxis_title="% Receiving ORT",
+    template="plotly_white",
+    bargap=0.2,
+    barmode='group'
+)
+
+fig_bars.show()
+
+
+```
+
+::: {.callout-tip appearance="minimal" icon="false"}
+## **Equal Treatment, Promising Progress**
+
+Global data shows near-identical ORT treatment rates for boys and girls with diarrhea, with girls slightly ahead in recent years—a significant achievement in health equity. This parity reflects successful interventions ensuring equal access to this life-saving care. While treatment rates are balanced, subtle differences may persist in prevention and follow-up. The equal bars represent real progress, proving that when simple, effective solutions are prioritized, gender gaps in basic healthcare can be closed. However, continued focus is needed to maintain and expand this equity across all aspects of child health
+:::
+
+## 3. Trend Over Time for Selected Country
+
+```{python}
+import plotly.express as px
+import plotly.graph_objects as go
+
+df_total = sample_df[sample_df["sex"] == "Total"]
+countries = df_total["country"].unique()
+
+fig = go.Figure()
+
+
+pattern_shapes = ["x", "/", "\\", ".", "+"]
+green_transparent = "rgba(0, 128, 0, 0.3)"  
+
+for i, country in enumerate(countries):
+    df_country = df_total[df_total["country"] == country]
+    area = px.area(
+        df_country,
+        x="time_period",
+        y="obs_value",
+        title=f"ORT Trend Over Time: {country}",
+        pattern_shape_sequence=[pattern_shapes[i % len(pattern_shapes)]],
+    )
+    
+    for trace in area.data:
+        trace.update(
+            line=dict(color="darkgreen", width=1.5),  
+            fillcolor=green_transparent,  
+            visible=(i == 0)
+        )
+        fig.add_trace(trace)
+
+
+buttons = [
+    dict(label=country,
+         method="update",
+         args=[{"visible": [j // 1 == i for j in range(len(countries))]},
+               {"title": f"ORT Trend Over Time: {country}"}])
+    for i, country in enumerate(countries)
+]
+
+fig.update_layout(
+    updatemenus=[dict(active=0, buttons=buttons)],
+    xaxis_title="Year",
+    yaxis_title="ORT Coverage (%)",
+    template="plotly_white"
+)
+
+fig.show()
+```
+
+::: {.callout-tip appearance="minimal" icon="false"}
+# This chart tracks how individual countries have progressed over the years in providing ORT. Some nations display a steady rise, reflecting robust policy efforts and health campaigns. Others show erratic patterns or stagnation—signaling disruptions or neglected attention. These country-level insights empower policymakers to replicate success models and re-evaluate faltering initiatives.
+:::
+
+## 4. Scatter Plot: GDP vs ORT Coverage
+
+```{python}
+fig_gdp_scatter = px.scatter(
+    pdf,
+    x="GDP per capita (constant 2015 US$)",
+    y="obs_value",
+    color="country",
+    title="GDP per Capita vs ORT Coverage",
+    labels={
+        "GDP per capita (constant 2015 US$)": "GDP per capita (2015 US$)",
+        "obs_value": "% Receiving ORT"
+    }
+)
+
+X = pdf[["GDP per capita (constant 2015 US$)"]]
+X = sm.add_constant(X)
+y = pdf["obs_value"]
+model = sm.OLS(y, X).fit()
+pdf["regression"] = model.predict(X)
+
+fig_gdp_scatter.add_traces(go.Scatter(
+    x=pdf["GDP per capita (constant 2015 US$)"],
+    y=pdf["regression"],
+    mode="lines",
+    name="Regression Line",
+    line=dict(color="black", dash="dot")
+))
+
+fig_gdp_scatter.update_layout(template="plotly_white")
+fig_gdp_scatter.show()
+```
+
+::: {.callout-tip appearance="minimal" icon="false"}
+# This scatter plot connects economic prosperity with health outcomes. Countries with higher GDP per capita generally show higher ORT coverage, revealing how economic strength often enables better health infrastructure. Yet, some lower-income countries outperform richer peers, showing that political will and targeted health initiatives can drive impact—regardless of financial constraints.
+:::
+
+# More to Look At
+```{python}
+from IPython.display import display, HTML
+latest_year = metadata_df["year"].max()
+
+
+latest_data = metadata_df.filter(pl.col("year") == latest_year)
+
+columns_needed = [
+    "country",
+    "Population, total",
+    "GDP per capita (constant 2015 US$)",
+    "Life expectancy at birth, total (years)",
+    "GDP growth (annual %)"
+]
+
+latest_data = latest_data.select(columns_needed)
+
+
+html_code = """
+<div style="display: flex; overflow-x: auto; padding: 20px; gap: 1.5rem; scroll-snap-type: x mandatory;">
+"""
+
+for row in latest_data.iter_rows(named=True):
+    country = row["country"]
+    population = f"{row['Population, total']:,}" if row['Population, total'] else "N/A"
+    gdp_per_capita = f"${row['GDP per capita (constant 2015 US$)']:,.2f}" if row['GDP per capita (constant 2015 US$)'] else "N/A"
+    life_expectancy = f"{row['Life expectancy at birth, total (years)']:.1f} years" if row['Life expectancy at birth, total (years)'] else "N/A"
+    gdp_growth = f"{row['GDP growth (annual %)']:.2f}%" if row['GDP growth (annual %)'] else "N/A"
+
+    html_code += f"""
+        <div style="
+            flex: 0 0 auto;
+            width: 300px;
+            height: 260px;
+            background: rgba(227, 227, 227, 0.08);
+            border-radius: 10px;
+            box-shadow: 0 7px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            justify-content: center;
+            font-family: 'Poppins', 'Segoe UI', 'Roboto', sans-serif;
+            scroll-snap-align: center;
+            padding: 20px;
+            text-align: left;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(5px);
+            overflow: hidden;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+        "
+        onmouseover="this.style.transform='scale(1.05)';" 
+        onmouseout="this.style.transform='scale(1)';"
+        >
+        <div style="flex: 1; display: flex; align-items: left; justify-content: left;">
+        <h2 style="font-size: 24px; font-weight: 600;">{country}</h2>
+    </div>
+
+    <!-- RIGHT SIDE: KPIs -->
+    <div style="flex: 2; display: flex; flex-direction: column; justify-content: center;">
+        <p><strong>GDP: </strong>{gdp_per_capita}</p>
+        <p><strong>Population: </strong>{population}</p>
+        <p><strong>Life Expectancy: </strong>{life_expectancy}</p>
+        <p><strong>Growth Rate: </strong>{gdp_growth}</p>
+    </div>
+    </div>
+    """
+
+html_code += "</div>"
+
+
+display(HTML(html_code))
+```
+
+
+## 5. Range of ORT Coverage Over Time
+
+```{python}
+import plotly.graph_objects as go
+
+
+range_df = sample_df.groupby("time_period")["obs_value"].agg(['min', 'max']).reset_index()
+range_df["trend"] = (range_df["min"] + range_df["max"]) / 2
+
+
+gradient_color = "rgba(0, 128, 0, 0.3)" 
+
+
+fig_range = go.Figure([
+    
+    go.Scatter(x=range_df["time_period"], y=range_df["max"],
+               mode="lines", name="Max", line=dict(width=0)),
+
+    
+    go.Scatter(x=range_df["time_period"], y=range_df["min"],
+               fill='tonexty', fillcolor=gradient_color,
+               mode="lines", name="Min", line=dict(width=0)),
+
+    
+    go.Scatter(x=range_df["time_period"], y=range_df["trend"],
+               mode="lines", name="Trend", line=dict(color="green", width=2))
+])
+
+fig_range.update_layout(
+    title="Range of ORT Coverage Over Time",
+    xaxis_title="Year",
+    yaxis_title="ORT Coverage (%)",
+    template="plotly_white"
+)
+
+fig_range.show()
+
+```
+
+::: {.callout-tip appearance="minimal" icon="false"}
+# This graph uncovers the global range of ORT coverage each year—illustrating both progress and disparity. While the overall trend is upward, the persistent gap between highest and lowest coverage points to deep-rooted inequality. Bridging this gap demands international cooperation and localized intervention strategies that reach the most vulnerable.
+:::
+
+# Conclusion
+
+This report provides insights into diarrhoea treatment across nations and its relationship with economic and healthcare factors.
+
+
+
+

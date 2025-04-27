@@ -1,0 +1,94 @@
+ body.night-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+  
+  body.night-mode .parallax {
+    filter: brightness(0.7);
+  }
+  
+  body.night-mode h1, body.night-mode h2, body.night-mode p{
+    color: #e0e0e0;
+  }
+  
+  body.night-mode a {
+    color: #81c784;
+  }
+  
+  button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #81c784;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 999; 
+    transition: background-color 0.3s ease;
+  }
+  
+  
+
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;  
+    pointer-events: auto;
+  }
+
+ 
+.scroll-container {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(100px);
+}
+
+body.night-mode .hero-parallax {
+  filter: brightness(0.6);
+}
+
+
+nav#TOC {
+  margin-right: 2rem; 
+  padding-left: 1rem;
+}
+
+nav#TOC:hover {
+  width: 300px; 
+}
+
+@media (min-width: 992px) {
+  nav#TOC {
+    right: 0;
+    position: fixed;
+    top: 200px;
+    width: 250px;
+    max-height: calc(100vh - 220px); 
+    overflow-y: auto; 
+    z-index: 10;
+    box-sizing: border-box; 
+    padding: 10px;
+  }
+}
+.quarto-title-banner {
+  background: rgba(4, 135, 13, 0.3) !important;
+  backdrop-filter: blur(3px) saturate(100%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 4px 30px rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  border-radius: 0 0 12px 12px;
+}
+
