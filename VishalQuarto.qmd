@@ -41,7 +41,6 @@ project:
 jupyter: python3
 ---
 
-
 # A Story of Care and Resilience {.animate-on-scroll}
 
 In a world often focused on groundbreaking medical advancements, the simple yet life-saving power of a mixture of salt, sugar, and clean water is frequently overlooked. Diarrhoea remains one of the leading causes of death among children under five, particularly in low-income regions. The tragedy lies not just in the illness itself, but in the fact that the treatment — Oral Rehydration Therapy (ORT) — is well-known, highly effective, and affordable. Yet, millions of children still go without it due to barriers such as poverty, misinformation, and weak healthcare systems. This report sheds light on these hidden struggles, using global data to represent the lives of children, families, and healthcare workers. Through these visuals, you'll uncover trends of progress, areas of disparity, and the significant impact of community health initiatives. Behind every data point is a child whose life was saved — or could have been — by this simple solution. This isn’t just a data analysis; it's a story of resilience, equity, and the collective ability to save lives — one sip at a time.
@@ -289,6 +288,7 @@ The option to view the data by gender adds a deeper layer to the narrative, high
 
 This map is more than just a visualization of statistics; it’s a powerful reminder of our world’s realities and the work still needed. It calls on all of us to not just observe, but to understand and take action. Because at the heart of these data points are children who deserve the chance to grow, learn, and thrive—every child deserves a healthy start.
 :::
+
 ## Lifesaving Sips: The Unequal Global Reach of Oral Rehydration Therapy:
 
 ```{python}
@@ -305,37 +305,29 @@ def get_continent(country_code):
     except:
         return None
 
-# Read the CSV data
 
 
-# Get the latest year for each country
 latest_years = sample_df.groupby('alpha_3_code')['time_period'].max().reset_index()
 
-# Merge to get only the latest year data for each country
 latest_data = pd.merge(sample_df, latest_years, on=['alpha_3_code', 'time_period'])
 
-# Filter to only include 'Total' sex entries
 latest_data = latest_data[latest_data['sex'] == 'Total']
 
-# Add continent/region information
+
 latest_data['region'] = latest_data['alpha_3_code'].apply(get_continent)
 
-# Remove any rows where region couldn't be determined
 latest_data = latest_data.dropna(subset=['region'])
 
-# Get top 3 countries by ORT% in each region
 top_countries = latest_data.sort_values(['region', 'obs_value'], ascending=[True, False]) \
                           .groupby('region') \
                           .head(3)
 
-# Calculate average ORT% for each region
 region_avg = latest_data.groupby('region')['obs_value'].mean().reset_index()
 region_avg.columns = ['region', 'avg_ort']
 
-# Prepare data for sunburst chart
 sunburst_data = []
 
-# Add region level
+
 for _, row in region_avg.iterrows():
     sunburst_data.append({
         'id': row['region'],
@@ -345,7 +337,6 @@ for _, row in region_avg.iterrows():
         'color': row['avg_ort']
     })
 
-# Add country level
 for _, row in top_countries.iterrows():
     sunburst_data.append({
         'id': f"{row['region']}-{row['country']}",
@@ -367,21 +358,21 @@ custom_color_scale = [
 ]
 
 
-# Create sunburst chart
+
 fig = px.sunburst(
     sunburst_df,
     names='label',
     parents='parent',
     values='value',
     color='color',
-    color_continuous_scale=custom_color_scale,  # Red-Yellow-Green scale
-    range_color=[0, 100],  # Scale from 0% to 100%
+    color_continuous_scale=custom_color_scale, 
+    range_color=[0, 100],  
     title='',
     width=800,
     height=800
 )
 
-# Update layout
+
 fig.update_layout(
     margin=dict(t=50, l=0, r=0, b=0),
     coloraxis_colorbar=dict(
@@ -390,7 +381,7 @@ fig.update_layout(
     )
 )
 
-# Show the figure
+
 fig.show()
 ```
 
@@ -398,12 +389,14 @@ fig.show()
 ## **Green Shades of Hope—and Neglect**
 
 ------------------------------------------------------------------------
+
 Diarrhea remains one of the leading killers of children under five, yet its simplest cure—oral rehydration therapy (ORT)—is tragically uneven in its reach. This sunburst chart reveals a stark divide: while some regions have embraced ORT, saving countless young lives, others still struggle to deliver this basic, life-saving intervention.
 
 The deeper greens show where ORT is widely available—where a packet of salts and clean water can turn despair into hope. The lighter shades expose gaps in care, where preventable deaths still occur. Each ring tells a story of progress and neglect, of innovation and inertia.
 
 This isn’t just data—it’s a map of survival. The question isn’t whether ORT works, but whether it reaches every child who needs it. The answer could mean the difference between life and loss for millions.
 :::
+
 ## Bar Chart: ORT Treatement by Gender
 
 ```{python}
@@ -585,7 +578,7 @@ fig_gdp_scatter.show()
 The scatter plot explores the relationship between a country's wealth, measured by GDP, and its ORT coverage for children under 5. Each dot represents a country, showing its economic strength and commitment to child health. While wealthier nations generally have higher ORT coverage, there are exceptions, with some economically challenged countries achieving impressive results. This plot highlights that GDP is not the sole determinant of healthcare success—policies, priorities, and equity also play key roles. Let it inspire action and remind us that every child, regardless of a nation's wealth, deserves access to life-saving healthcare.
 :::
 
-# More to Look At
+# Understanding Country Readiness
 
 ```{python}
 from IPython.display import display, HTML
@@ -662,6 +655,16 @@ html_code += "</div>"
 display(HTML(html_code))
 ```
 
+::: {.callout-tip appearance="minimal" collapse="true" icon="false"}
+# **A Deeper Look at National Landscapes**
+
+------------------------------------------------------------------------
+
+This section gives a broader view of how countries are positioned to tackle childhood diarrhoea using simple solutions like Oral Rehydration Therapy (ORT). By looking at GDP per capita, life expectancy, population size, and growth rate, we can gauge the resources, health systems, and challenges each nation faces.
+
+It highlights which countries are better prepared and where more support or stronger policies are needed. Behind each metric is a reminder: fighting diarrhoea isn't just about medicine — it's about building strong systems and ensuring every child has a fair chance at a healthy life.
+:::
+
 ## Range of ORT Coverage Over Time
 
 ```{python}
@@ -720,4 +723,3 @@ While wealth influences healthcare, it’s not the only factor. Many countries h
 At the heart of these stories are the children whose survival depends on a simple, affordable treatment. As we move forward, let these narratives inspire action, reminding us of the importance of equitable healthcare and the impact we can have on children's lives.
 
 Every child deserves a healthy start, and it’s up to us to make that a reality. Let’s continue the fight against diarrhoea and ensure every child has access to life-saving ORT, for a healthier future for all.
-
